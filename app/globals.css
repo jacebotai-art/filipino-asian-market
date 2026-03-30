@@ -1,0 +1,183 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+:root {
+  --radius: 0.625rem;
+  /* Filipino Asian Market Warm Theme - Reds, Golds, Warm Tones */
+  --background: #FFFBF5;
+  --foreground: #2C1810;
+  --card: #FFFFFF;
+  --card-foreground: #2C1810;
+  --popover: #FFFFFF;
+  --popover-foreground: #2C1810;
+  --primary: #C41E3A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F5E6C8;
+  --secondary-foreground: #2C1810;
+  --muted: #F9F3E9;
+  --muted-foreground: #6B5B4F;
+  --accent: #D4AF37;
+  --accent-foreground: #2C1810;
+  --destructive: #DC2626;
+  --border: #E8DDD0;
+  --input: #E8DDD0;
+  --ring: #C41E3A;
+  --chart-1: #C41E3A;
+  --chart-2: #D4AF37;
+  --chart-3: #228B22;
+  --chart-4: #FF6B35;
+  --chart-5: #8B4513;
+  --sidebar: #F9F3E9;
+  --sidebar-foreground: #2C1810;
+  --sidebar-primary: #C41E3A;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F5E6C8;
+  --sidebar-accent-foreground: #2C1810;
+  --sidebar-border: #E8DDD0;
+  --sidebar-ring: #C41E3A;
+}
+
+.dark {
+  --background: #1A0F0A;
+  --foreground: #F9F3E9;
+  --card: #2C1810;
+  --card-foreground: #F9F3E9;
+  --popover: #2C1810;
+  --popover-foreground: #F9F3E9;
+  --primary: #E63950;
+  --primary-foreground: #FFFFFF;
+  --secondary: #3D2817;
+  --secondary-foreground: #F9F3E9;
+  --muted: #3D2817;
+  --muted-foreground: #A89080;
+  --accent: #E5C44D;
+  --accent-foreground: #1A0F0A;
+  --destructive: #EF4444;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #E63950;
+  --chart-1: #E63950;
+  --chart-2: #E5C44D;
+  --chart-3: #4ADE80;
+  --chart-4: #FB923C;
+  --chart-5: #A87050;
+  --sidebar: #2C1810;
+  --sidebar-foreground: #F9F3E9;
+  --sidebar-primary: #E63950;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #3D2817;
+  --sidebar-accent-foreground: #F9F3E9;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #E63950;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+}
+
+/* Mobile touch target minimums */
+@layer base {
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"] {
+    min-height: 44px;
+  }
+  
+  /* Form inputs - 16px prevents iOS zoom */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+    touch-action: manipulation;
+  }
+}
+
+/* Mobile viewport */
+@viewport {
+  width: device-width;
+  initial-scale: 1;
+  maximum-scale: 5;
+}
+
+/* Safe area support for notched devices */
+@supports (padding: max(0px)) {
+  .safe-bottom {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  .safe-top {
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
