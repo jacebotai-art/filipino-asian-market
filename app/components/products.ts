@@ -1,6 +1,100 @@
 import { Product } from "./CartContext";
 
-export const products: Product[] = [
+// Grazecart API Types
+export interface GrazecartProduct {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  sale_price?: number;
+  inventory_count: number;
+  images: string[];
+  category: string;
+  sku: string;
+  is_available: boolean;
+}
+
+export interface GrazecartCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  product_count: number;
+}
+
+// API Configuration
+const GRAZECART_API_URL = process.env.NEXT_PUBLIC_GRAZECART_STORE_URL || "https://filipinoasianmarket.grazecart.com";
+const API_TOKEN = process.env.NEXT_PUBLIC_GRAZECART_API_TOKEN || "";
+
+// Grazecart API Client
+export async function fetchGrazecartProducts(): Promise<GrazecartProduct[]> {
+  try {
+    const response = await fetch(`${GRAZECART_API_URL}/api/v1/products`, {
+      headers: {
+        "Authorization": `Bearer ${API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.warn("Grazecart API unavailable, using local data");
+    return [];
+  }
+}
+
+export async function fetchGrazecartCategories(): Promise<GrazecartCategory[]> {
+  try {
+    const response = await fetch(`${GRAZECART_API_URL}/api/v1/categories`, {
+      headers: {
+        "Authorization": `Bearer ${API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.warn("Grazecart API unavailable, using local data");
+    return [];
+  }
+}
+
+// Convert Grazecart product to local format
+export function convertGrazecartProduct(gp: GrazecartProduct): Product {
+  return {
+    id: `gc-${gp.id}`,
+    name: gp.name,
+    description: gp.description,
+    price: gp.price,
+    wholesalePrice: gp.price * 0.8,
+    unit: "each",
+    image: gp.images[0] || "",
+    emoji: "🛒",
+    category: gp.category,
+    inStock: gp.is_available && gp.inventory_count > 0,
+    stockLevel: gp.inventory_count > 20 ? "high" : gp.inventory_count > 5 ? "medium" : "low",
+    stockCount: gp.inventory_count,
+    isPopular: false,
+    rating: 4.5,
+    reviewCount: 0,
+    reviews: [],
+    nutritionalInfo: { calories: 0, protein: "0g", carbs: "0g", fat: "0g", sodium: "0mg", servingSize: "1 serving" },
+    recipes: [],
+    tags: [gp.category],
+    relatedProducts: [],
+  };
+}
+
+// Local products data
+export const localProducts: Product[] = [
   // Fresh Produce
   {
     id: "fp-1", name: "Fresh Manila Mangoes", description: "Sweet and juicy Manila mangoes, flown in fresh from the Philippines.",
@@ -146,6 +240,22 @@ export const products: Product[] = [
     recipes: [], tags: ["snack", "nuts", "bicol"], relatedProducts: ["snk-1", "snk-3"]
   },
 ];
+
+// Combined products (local + Grazecart when available)
+export let products: Product[] = [...localProducts];
+
+// Initialize products with Grazecart data
+export async function initializeProducts(): Promise<void> {
+  try {
+    const grazecartProducts = await fetchGrazecartProducts();
+    if (grazecartProducts.length > 0) {
+      const convertedProducts = grazecartProducts.map(convertGrazecartProduct);
+      products = [...localProducts, ...convertedProducts];
+    }
+  } catch (error) {
+    console.warn("Failed to load Grazecart products, using local data only");
+  }
+}
 
 export const categories = [
   { id: "fresh-produce", name: "Fresh Produce", description: "Farm-fresh vegetables and tropical fruits", color: "bg-green-100", icon: "🥬", emoji: "🥬" },
